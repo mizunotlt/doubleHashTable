@@ -1,4 +1,5 @@
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -106,19 +107,23 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
     }
 
     public int mainHashFun (int hash1 , int hash2 , int count){
+
         return (hash1 + count * hash2) % sizeOfTable;
     }
 
     public int helpHashFun1(E1 key){
+
         return key.hashCode() % sizeOfTable;
     }
 
     public int helpHashFun2(E1 key){
+
         return 1 + key.hashCode() % ( sizeOfTable - 1);
     }
 
     @Override
     public boolean isEmpty() {
+
         return size() == 0;
     }
 
@@ -157,19 +162,84 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
         countElements = 0;
     }
 
+    public class IteratorForKeys implements Iterator<E1>{
+
+        private  IteratorForKeys(){
+        }
+        @Override
+        public boolean hasNext() {
+
+            return false;
+        }
+
+        @Override
+        public E1 next() {
+            return null;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    }
+    public class IteratorForValues implements Iterator<E2>{
+
+        private  IteratorForValues(){
+        }
+
+        @Override
+        public boolean hasNext() {
+
+            return false;
+        }
+
+        @Override
+        public E2 next() {
+            return null;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public Iterator<E1> iteratorForKeys() {
+        return new IteratorForKeys();
+    }
+
+    public Iterator<E2> iteratorForValues() {
+        return new IteratorForValues();
+    }
 
     @Override
     public Set<E1> keySet() {
+
         return null;
     }
 
     @Override
     public Collection<E2> values() {
+
         return null;
     }
 
     @Override
     public Set<Entry<E1, E2>> entrySet() {
+
         return null;
     }
+
+    @Override
+    public int hashCode(){
+
+        return 0;
+    }
+
+    @Override
+    public boolean equals(Object object){
+
+        return false;
+    }
+
 }
