@@ -33,6 +33,13 @@ public class Element< E1, E2> implements Map.Entry<E1, E2> {
     }
 
     @Override
+    public int hashCode() {
+        int result = key.hashCode();
+        result = 31 * result + value.hashCode();
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "(" + this.key + ":" + this.value + ")";
     }
