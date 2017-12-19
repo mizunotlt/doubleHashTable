@@ -33,8 +33,8 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
 
     //Поисик ключа в таблице
     public E1 findKey(E1 key){
-        int hashFunResult1 = helpHashFun1((E1)key);
-        int hashFunResult2 = helpHashFun2((E1)key);
+        int hashFunResult1 = helpHashFun1(key);
+        int hashFunResult2 = helpHashFun2(key);
         for (int i = 0;  i < sizeOfTable; i++){
             int hash = mainHashFun(hashFunResult1, hashFunResult2, i);
             if(doubleHashTable[hash] != null)
@@ -91,7 +91,7 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
         int hashFunResult2 = helpHashFun2((E1)key);
         for (int i = 0; i < sizeOfTable; i++){
             int hash = mainHashFun(hashFunResult1, hashFunResult2, i);
-            if (doubleHashTable[hash].getKey().equals((E1)key)){
+            if (doubleHashTable[hash].getKey().equals(key)){
                 return  doubleHashTable[hash].getValue();
             }
         }
@@ -109,7 +109,7 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
         int hashFunResult2 = helpHashFun2((E1)key);
         for (int i = 0; i < sizeOfTable; i++){
             int hash = mainHashFun(hashFunResult1, hashFunResult2, i);
-            if (doubleHashTable[hash].getKey().equals((E1)key)){
+            if (doubleHashTable[hash].getKey().equals(key)){
                 doubleHashTable[hash] = null;
                 countElements--;
                 return  elementValue;
@@ -141,10 +141,7 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
 
     @Override
     public boolean containsKey(Object key) {
-        if (size() == 0 || findKey((E1)key) == null)
-            return false;
-        else
-            return true;
+        return !(size() == 0 || findKey((E1) key) == null);
     }
 
     @Override
@@ -154,7 +151,7 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
         for (int i = 0; i < sizeOfTable; i++){
             if(doubleHashTable[i] == null)
                 continue;
-            if (doubleHashTable[i].getValue().equals((E2)value))
+            if (doubleHashTable[i].getValue().equals(value))
                 return true;
         }
         return false;
@@ -459,12 +456,8 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
             return false;
         if(getClass() != object.getClass())
             return false;
-        Set setKey = this.keySet();
         Set otherSetKey = table.keySet();
-        Collection collectionValue = this.values();
-        Collection otherCollectionValue = table.values();
-        if (setKey.equals(otherSetKey) && collectionValue.equals(otherCollectionValue))
-            return true;
-        return false;
+        Set otherEntrySet = table.entrySet();
+        return this.keySet().equals(otherSetKey) && (this.entrySet().equals(otherEntrySet));
     }
 }
