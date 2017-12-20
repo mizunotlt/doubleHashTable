@@ -349,7 +349,7 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
             E2 values = (E2) value;
             do{
                 E2 i = iteratorForValue.next();
-                if (i == values){
+                if (i.equals(values)){
                     iteratorForValue.remove();
                     return true;
                 }
