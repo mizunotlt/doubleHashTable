@@ -119,7 +119,7 @@ public class Tests {
         table2.put(keys3, word3);
 
         int get2 = table2.findKey(keys2);
-        assertEquals(key2, get2 );
+        assertEquals(keys2, get2 );
     }
 
     @Test
@@ -143,7 +143,7 @@ public class Tests {
         table1.put(key5, value5);
 
         int valueRemove =  table1.remove(key4);
-        assertEquals(value4 , valueRemove);
+        assertEquals(value4, valueRemove);
         assertEquals(4, table1.size());
 
         DoubleHashTable<Integer, String> table2 = new DoubleHashTable();
@@ -158,9 +158,9 @@ public class Tests {
         table2.put(keys2, word2);
         table2.put(keys3, word3);
 
-        String valueRemoves =  table2.remove(key4);
-        assertEquals(word2 , valueRemove);
-        assertEquals(2, table1.size());
+        String valueRemoves =  table2.remove(keys2);
+        assertEquals(word2 , valueRemoves);
+        assertEquals(2, table2.size());
     }
 
     @Test

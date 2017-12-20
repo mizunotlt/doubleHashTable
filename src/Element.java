@@ -3,16 +3,24 @@ import java.util.Map;
 public class Element< E1, E2> implements Map.Entry<E1, E2> {
     private E1 key;
     private E2 value;
+    private boolean isFree;
 
     public Element(E1 key, E2 value) {
         this.key = key;
         this.value = value;
+        this.isFree = false;
     }
 
     @Override
     public E1 getKey() {
 
         return key;
+    }
+    public boolean getIsFree(){
+        return isFree;
+    }
+    public boolean changeFree(){
+        return !this.isFree;
     }
 
     @Override

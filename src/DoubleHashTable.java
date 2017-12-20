@@ -21,15 +21,6 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
         return countElements;
     }
 
-    //Свободный индекс в таблице
-    private boolean isFreeIndex(){
-        for (int i = 0; i < sizeOfTable; i++){
-            if (doubleHashTable[i] == null){
-                return true;
-            }
-        }
-        return false;
-    }
 
     //Поисик ключа в таблице
     public E1 findKey(E1 key){
@@ -37,7 +28,7 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
         int hashFunResult2 = helpHashFun2(key);
         for (int i = 0;  i < sizeOfTable; i++){
             int hash = mainHashFun(hashFunResult1, hashFunResult2, i);
-            if(doubleHashTable[hash] != null)
+            if((doubleHashTable[hash] != null) && !doubleHashTable[hash].getIsFree())
                 if (doubleHashTable[hash].getKey().equals(key))
                     return doubleHashTable[hash].getKey();
         }
@@ -49,7 +40,7 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
         int hashFunResult2 = helpHashFun2(key);
         for (int i = 0; i < sizeOfTable; i++){
             int hash = mainHashFun(hashFunResult1, hashFunResult2, i);
-            if (table[hash] == null){
+            if (table[hash] == null) {
                 table[hash] = new Element(key, value);
                 return table[hash].getValue();
             }
@@ -65,7 +56,7 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
         if (findKey(key) != null){
             return null;
         }
-        if (!isFreeIndex() || hashFunResult1 > sizeOfTable || hashFunResult2 > sizeOfTable ){
+        if (countElements == sizeOfTable ){
             sizeOfTable = 2 * sizeOfTable;
             Element<E1, E2> newDoubleHashTable[] = new Element[sizeOfTable];
             for (int i = 0; i < doubleHashTable.length; i++){
@@ -75,8 +66,9 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
         }
         for (int i = 0; i < sizeOfTable; i++){
             int hash = mainHashFun(hashFunResult1, hashFunResult2, i);
-            if (doubleHashTable[hash] == null){
+            if ((doubleHashTable[hash] == null)|| doubleHashTable[hash].getIsFree()){
                doubleHashTable[hash] = new Element(key, value);
+                doubleHashTable[hash].changeFree();
                countElements++;
                return doubleHashTable[hash].getValue();
             }
@@ -110,7 +102,7 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
         for (int i = 0; i < sizeOfTable; i++){
             int hash = mainHashFun(hashFunResult1, hashFunResult2, i);
             if (doubleHashTable[hash].getKey().equals(key)){
-                doubleHashTable[hash] = null;
+                doubleHashTable[hash].changeFree();
                 countElements--;
                 return  elementValue;
             }
@@ -130,7 +122,11 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
 
     private int helpHashFun2(E1 key){
 
-        return 1 + key.hashCode() % ( sizeOfTable - 1);
+        int hashCode = key.hashCode() % ( sizeOfTable - 1);
+        if (hashCode % 2 == 0)
+                return hashCode + 1;
+        else
+        return hashCode;
     }
 
     @Override
@@ -159,8 +155,8 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
 
     @Override
     public void putAll(Map<? extends E1, ? extends E2> m) {
-        for (Map.Entry entry: m.entrySet())
-            put((E1)entry.getKey(), (E2)entry.getValue());
+        for (Map.Entry<? extends E1, ? extends E2> entry: m.entrySet())
+            put(entry.getKey(), entry.getValue());
     }
 
     @Override
@@ -193,7 +189,6 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
                 else
                     i++;
             }
-            nextIndex = i;
             return currentKey != null;
         }
 
@@ -238,7 +233,6 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
                 else
                     i++;
             }
-            nextIndex = i;
             return currentValue != null;
         }
 
@@ -340,6 +334,16 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
         }
 
         @Override
+        public boolean contains(Object obj){
+            return DoubleHashTable.this.containsValue(obj);
+        }
+
+        @Override
+        public void clear(){
+            DoubleHashTable.this.clear();
+        }
+
+        @Override
         public boolean remove (Object value){
             Iterator <E2> iteratorForValue = iterator();
             E2 values = (E2) value;
@@ -375,7 +379,6 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
                 else
                     i++;
             }
-            nextIndex = i;
             return currentEntry != null;
         }
 
@@ -424,7 +427,16 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
 
             return DoubleHashTable.this.size();
         }
+        @Override
+        public boolean contains(Object obj){
+            Element <E1, E2> el = (Element<E1, E2>) obj;
+            return DoubleHashTable.this.containsKey(el.getKey()) && DoubleHashTable.this.containsValue(el.getValue());
+        }
 
+        @Override
+        public void clear(){
+            DoubleHashTable.this.clear();
+        }
         @Override
         public boolean remove (Object entry){
             Iterator <Entry<E1, E2>> iteratorForEntry = iterator();
@@ -456,8 +468,7 @@ public class DoubleHashTable <E1, E2> implements Map<E1, E2> {
             return false;
         if(getClass() != object.getClass())
             return false;
-        Set otherSetKey = table.keySet();
         Set otherEntrySet = table.entrySet();
-        return this.keySet().equals(otherSetKey) && (this.entrySet().equals(otherEntrySet));
+        return  (this.entrySet().equals(otherEntrySet));
     }
 }
